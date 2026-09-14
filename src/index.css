@@ -1,0 +1,287 @@
+* {
+        box-sizing: border-box;
+}
+
+html {
+        font-size: 0.9rem;
+        font-family: 'Inter', sans-serif;
+}
+
+body {
+        height: 100vh;
+        width: 100vw;
+        margin: 0;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+ul, h2 {
+        padding: 0;
+        margin: 0;
+}
+
+#root {
+        height: 100%;
+        width: 100%;
+        background-color: rgb(29, 28, 27);
+        display: flex;
+        flex-direction: column;
+}
+
+#header, #footer {
+        height: 10vh;
+        width: 100%;
+        flex-shrink: 0;
+}
+
+#main {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+}
+
+.card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 40%;
+        height: 80%;
+        background-color: white;
+        border-radius: 8%;
+        box-shadow: 0 0 60px rgba(255, 255, 255, 0.2);
+        padding-left: 2.4rem;
+}
+
+#cardHeader {
+        min-height: 10%;
+        padding: 1.5rem 2rem 0 0;
+        display: flex;
+        justify-content: space-between;
+}
+
+#mainIcon {
+        height: 3rem;
+        width: 3rem;
+}
+
+.cardButton {
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: xxx-large;
+        transition: all 0.1s ease-in-out;
+}
+
+.cardButton:hover {
+        transform: scale(1.1);
+}
+
+
+.cardContent {
+        height: 80%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4rem;
+}
+
+#menuItemHeader {
+        margin-top: 4rem;
+}
+
+.menuItem {
+        cursor: pointer;
+        font-size: xx-large;
+        font-weight:normal ;
+        display: block;
+        position: relative;
+        padding: 0.2em 0;
+        margin: 0;
+}
+
+.menuItem::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 0.1em;
+	background-color: rgb(29, 28, 27);
+	opacity: 0;
+	transition: opacity 300ms, transform 300ms;
+}
+
+.menuItem:hover::after,
+.menuItem:focus::after {
+	opacity: 1;
+	transform: translate3d(0, 0.2em, 0);
+}
+
+.monsterContainer {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.monsterHeader {
+	min-height: 15%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 1rem;
+}
+
+.monsterTitle {
+        grid-column: 1;
+        grid-row: 1;
+        margin: 0;
+        font-size: x-large;
+}
+
+.CR {
+        grid-column: 2;
+        grid-row: 1;
+        margin: 0;
+        font-size: x-large;
+        margin-left: 2rem;
+}
+
+.monsterInfoBriefContainer {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        flex-grow: 1;
+}
+
+.monsterInfoBriefContainer > p {
+        margin: 0;
+        font-size: larger;
+}
+
+.monsterInfoBriefSeparation {
+        font-weight: bolder;
+}
+
+.monsterImageContainer {
+	flex: 1;
+	width: 100%;
+	padding: 0 0 1.5rem 2.5rem;
+	position: relative;
+}
+
+.monsterImageWrapper {
+        position: relative;
+}
+
+.preloadHidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+        overflow: hidden;
+}
+
+.spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 3rem;
+        height: 3rem;
+        margin: -1.5rem 0 0 -1.5rem;
+        border: 0.3rem solid rgba(29, 28, 27, 0.15);
+        border-top-color: rgb(29, 28, 27);
+        border-radius: 50%;
+        animation: spin 800ms linear infinite;
+        z-index: 20;
+}
+
+@keyframes spin {
+        to {
+                transform: rotate(360deg);
+        }
+}
+
+#monsterImage img,
+#monsterImageNext img {
+	width: 100%;
+	height: 100%;
+        object-fit: cover;
+        display: block;
+}
+
+#monsterImage {
+        position: relative;
+	height: 90%;
+	width: 80%;
+	border-radius: 3rem;
+	z-index: 10;
+        overflow: hidden;
+        transition: all 0.1s ease-in-out;
+        cursor: auto;
+        box-shadow: none;
+}
+
+#monsterImageNext {
+	position: absolute;
+	height: 75%;
+	width: 80%;
+	border-radius: 3rem;
+	z-index: 5;
+	top: 7%;
+	left: 10%;
+        overflow: hidden;
+        transition: all 0.1s ease-in-out;
+        cursor: auto;
+        box-shadow: none;
+}
+
+.monsterImg {
+        opacity: 0;
+        transition: opacity 200ms ease, box-shadow 200ms ease;
+}
+
+.monsterImg.loaded {
+	opacity: 1;
+	cursor: pointer;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+#monsterImage:hover {
+        color: rgba(255, 255, 255, 1);
+        transform: scale(1.02);
+}
+
+#monsterImageNext:hover {
+        transform: translateX(2%);
+}
+
+.preloadHidden {
+        position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+	pointer-events: none;
+	overflow: hidden;
+}
+
+.monsterDetailContainer {
+        height: 85%;
+}
+
+.actionContainer {
+        display: flex;
+        flex-direction: row;
+        padding-left: 1.5rem;
+}
