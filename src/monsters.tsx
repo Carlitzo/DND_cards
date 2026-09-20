@@ -116,14 +116,97 @@ function MonsterDetail({ monster }: MonsterDetailProps) {
         return (
                 <div className="monsterDetailContainer">
                         <div className="monsterDetailContainerTop">
-                                <div className="basicInfoContainer">
-
+                                <div className="monsterDetailContainerTopLeft">
+                                        <div className="basicInfoContainer">
+                                                <div className="basicInfoContainers">
+                                                        <h4 className="basicInfoHeader">
+                                                                Alignment:
+                                                        </h4>
+                                                        <p className="basicInfoValue">{monster.alignment}</p>
+                                                </div>
+                                                <div className="basicInfoContainers">
+                                                        <h4 className="basicInfoHeader">
+                                                                Speed:
+                                                        </h4>
+                                                        <div className="basicInfoValue">{Object.entries(monster.speed).map(([type, value]) => {
+                                                                return <p key={type}>{type}: {value} </p>
+                                                        })}</div>
+                                                </div>
+                                                <div className="basicInfoContainers">
+                                                        <h4 className="basicInfoHeader">
+                                                                Resistances:
+                                                        </h4>
+                                                        <div className="basicInfoValue">{monster.damage_resistances.map((resistance, index) => {
+                                                                return <p key={index}>- {resistance} </p>
+                                                        })}</div>
+                                                </div>
+                                                <div className="basicInfoContainers">
+                                                        <h4 className="basicInfoHeader">
+                                                                Damage immunities:
+                                                        </h4>
+                                                        <div className="basicInfoValue">{monster.damage_immunities.map((immunity, index) => {
+                                                                return <p key={index}>- {immunity} </p>
+                                                        })}</div>
+                                                </div>
+                                                <div className="basicInfoContainers">
+                                                        <h4 className="basicInfoHeader">
+                                                                Condition Immunities:
+                                                        </h4>
+                                                        <div className="basicInfoValue">{monster.condition_immunities.map((immunity, index) => {
+                                                                return <p key={index}>- {immunity} </p>
+                                                        })}</div>
+                                                </div>
+                                                <div className="basicInfoContainers">
+                                                        <h4 className="basicInfoHeader">
+                                                                Vulnerabilities:
+                                                        </h4>
+                                                        <div className="basicInfoValue">{monster.damage_vulnerabilities.map((vulnerability, index) => {
+                                                                return <p key={index}>- {vulnerability} </p>
+                                                        })}</div>
+                                                </div>
+                                                <div className="basicInfoContainers">
+                                                        <h4 className="basicInfoHeader">
+                                                                Darkvision:
+                                                        </h4>
+                                                        <div className="basicInfoValue">
+                                                                {monster.darkvision? <p key="">yes</p> : <p key="">no</p>}
+                                                        </div>
+                                                </div>
+                                        </div>
+                                        <div className="statsContainer">
+                                                        <div>
+                                                                <p className="monsterStatName">str</p>
+                                                                <p className="monsterStatValue">{monster.stats.str}</p>
+                                                        </div>
+                                                        <p className="monsterInfoBriefSeparation"></p>
+                                                        <div>
+                                                                <p className="monsterStatName">con</p>
+                                                                <p className="monsterStatValue">{monster.stats.con}</p>
+                                                        </div>
+                                                        <p className="monsterInfoBriefSeparation"></p>
+                                                        <div>
+                                                                <p className="monsterStatName">dex</p>
+                                                                <p className="monsterStatValue">{monster.stats.dex}</p>
+                                                        </div>
+                                                        <p className="monsterInfoBriefSeparation"></p>
+                                                        <div>
+                                                                <p className="monsterStatName">int</p>
+                                                                <p className="monsterStatValue">{monster.stats.int}</p>
+                                                        </div>
+                                                        <p className="monsterInfoBriefSeparation"></p>
+                                                        <div>
+                                                                <p className="monsterStatName">wis</p>
+                                                                <p className="monsterStatValue">{monster.stats.wis}</p>
+                                                        </div>
+                                                        <p className="monsterInfoBriefSeparation"></p>
+                                                        <div>
+                                                                <p className="monsterStatName">cha</p>
+                                                                <p className="monsterStatValue">{monster.stats.cha}</p>
+                                                        </div>
+                                        </div>
                                 </div>
-                                <div className="statsContainer">
-
-                                </div>
-                                <div className="imageContainer">
-
+                                <div className="monsterDetailContainerTopRight">
+                                        <img className="smallMonsterImage" src={monster.image} alt="" />
                                 </div>
                         </div>
                         <div className="monsterDetailContainerBottom">
@@ -146,7 +229,7 @@ function MonsterDetail({ monster }: MonsterDetailProps) {
                                 </div>
                                 {monster.special_abilities && (
                                         <>
-                                        <h2 className="specialAbilites">Special Abilities:</h2>
+                                        <h2 className="specialAbilities">Special Abilities:</h2>
                                         <div className="specialAbilitiesContainer">
                                                 {monster.special_abilities.map((ability, index) => {return (
                                                         <div className="specialAbilityContainer" key={index}>

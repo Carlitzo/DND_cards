@@ -44,8 +44,6 @@ interface speed {
         climbing?: string
 }
 
-type condition_immunities = string;
-
 type spell = {
         name: string
         level: number
@@ -71,7 +69,7 @@ export type Monster = {
         damage_vulnerabilities?: string[],
         damage_resistances?: string[],
         damage_immunities?: string[],
-        condition_immunities?: condition_immunities[],
+        condition_immunities?: string[],
         darkvision: boolean,
         languages: string | string[],
         challenge_rating: number,

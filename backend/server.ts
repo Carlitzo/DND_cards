@@ -64,21 +64,20 @@ async function _fetchAndManipulateMonsters() {
                 console.log('Loaded monsters from cached file.');
         } catch (error) {
                 console.log('No cached file found, fetching from API instead.');
-
+                
                 const res = await fetch('https://www.dnd5eapi.co/api/2014/monsters/'); // fetches all monsters to get their name for next fetch (only returns an object with limited information about the specific monster)
                 const data = await res.json();
                 const urls = data.results.map((result: any) => `https://www.dnd5eapi.co${result.url}`); // gets the url of all monsters so they can be fetched in batches individually
                 
                 rawMonsterData = await fetchInBatches(urls, 10, 500);
+                console.log(rawMonsterData.find(monster => monster.name === "Adult Black Dragon"));
                 console.log(error);
-                console.log(_monsters);
                 await Deno.writeTextFile('./cached_files/monsters.json', JSON.stringify(rawMonsterData, null, 2));
                 console.log(`Fetched and cached ${rawMonsterData.length} monsters`);
         }
 
         const monsters: Monster[] = rawMonsterData.map(mapToMonster);
         _monsters = sortMonsters(monsters)
-        console.log(rawMonsterData.filter(monster => monster.legendary_actions.length !== 0));
 } 
 
 function mapToMonster(rawMonsterData: any): Monster {
@@ -101,7 +100,9 @@ function mapToMonster(rawMonsterData: any): Monster {
                 damage_vulnerabilities: rawMonsterData.damage_vulnerabilities,
                 damage_resistances: rawMonsterData.damage_resistances,
                 damage_immunities: rawMonsterData.damage_immunities,
-                condition_immunities: rawMonsterData.condition_immunities,
+                condition_immunities: rawMonsterData.condition_immunities?.map((immunityObject: any) => {
+                        return immunityObject.name ?? [];
+                }),
                 darkvision: rawMonsterData.senses?.darkvision !== undefined,
                 languages: rawMonsterData.languages,
                 challenge_rating: rawMonsterData.challenge_rating,
@@ -116,10 +117,10 @@ function mapToMonster(rawMonsterData: any): Monster {
 
 function sortMonsters(monsters: any[]) {
         return monsters.sort((monsterA, monsterB) => {
-                if (monsterA.type < monsterB.type) return -1;
-                if (monsterA.type > monsterB.type) return 1;
+                if (monsterA.challenge_rating < monsterB.challenge_rating) return 1;
+                if (monsterA.challenge_rating > monsterB.challenge_rating) return -1;
                 
-                return monsterA.challenge_rating - monsterB.challenge_rating;
+                return monsterA.name - monsterB.name;
         });
 }
 
