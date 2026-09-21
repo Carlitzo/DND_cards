@@ -80,3 +80,13 @@ export type Monster = {
         legendary_actions?: legendary_action[]
         reactions?: reaction[]
 }
+
+export type Item = {
+        name: string
+        category: string
+        image: string
+        url: string
+        rarity: string
+        desc: string[]
+        attunement?: string
+}

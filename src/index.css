@@ -126,15 +126,15 @@ ul, h2, p, h4 {
 	transform: translate3d(0, 0.2em, 0);
 }
 
-.monsterContainer {
+.monsterContainer, .itemContainer {
 	height: 100%;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-        gap: 1rem;
+        gap: 3rem;
 }
 
-.monsterHeader {
+.monsterHeader, .itemHeader {
 	min-height: 10%;
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -142,7 +142,17 @@ ul, h2, p, h4 {
         gap: 1rem;
 }
 
-.monsterTitle {
+.itemHeader {
+        max-width: 100%;
+}
+
+.itemTitle {
+        grid-column: 1 / -1 !important;
+        grid-row: 1 !important;
+        width: 100%;
+}
+
+.monsterTitle, .itemTitle {
         grid-column: 1;
         grid-row: 1;
         margin: 0;
@@ -157,7 +167,7 @@ ul, h2, p, h4 {
         margin-left: 2rem;
 }
 
-.monsterInfoBriefContainer {
+.monsterInfoBriefContainer, .itemInfoBriefContainer {
         grid-column: 1 / -1;
         grid-row: 2;
         display: flex;
@@ -166,26 +176,25 @@ ul, h2, p, h4 {
         align-items: center;
 }
 
-.monsterInfoBriefContainer > p {
+.monsterInfoBriefContainer, .itemInfoBriefContainer > p {
         margin: 0;
         font-size: larger;
 }
 
-.monsterInfoBriefSeparation {
+.monsterInfoBriefSeparation, .itemInfoBriefSeparation {
         font-weight: bolder;
         height: 80%;
         width: 3px;
         background-color: rgb(34, 34, 34);
 }
 
-.monsterImageContainer {
+.monsterImageContainer, .itemImageContainer {
 	flex: 1;
 	width: 100%;
-	padding: 0 0 1.5rem 2.5rem;
 	position: relative;
 }
 
-.monsterImageWrapper {
+.monsterImageWrapper, .itemImageWrapper {
         position: relative;
 }
 
@@ -219,13 +228,15 @@ ul, h2, p, h4 {
 }
 
 #monsterImage img,
-#monsterImageNext img {
+#monsterImageNext img,
+#itemImage img,
+#itemImageNext img {
 	width: 100%;
 	height: 100%;
         display: block;
 }
 
-#monsterImage {
+#monsterImage, #itemImage {
         position: relative;
 	height: 90%;
 	width: 80%;
@@ -237,7 +248,7 @@ ul, h2, p, h4 {
         box-shadow: none;
 }
 
-#monsterImageNext {
+#monsterImageNext, #itemImageNext {
 	position: absolute;
 	height: 75%;
 	width: 80%;
@@ -251,23 +262,23 @@ ul, h2, p, h4 {
         box-shadow: none;
 }
 
-.monsterImg {
+.monsterImg, .itemImg {
         opacity: 0;
         transition: opacity 200ms ease, box-shadow 200ms ease;
 }
 
-.monsterImg.loaded {
+.monsterImg.loaded, .itemImg.loaded {
 	opacity: 1;
 	cursor: pointer;
 	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
-#monsterImage:hover {
+#monsterImage:hover, #itemImage:hover {
         color: rgba(255, 255, 255, 1);
         transform: scale(1.02);
 }
 
-#monsterImageNext:hover {
+#monsterImageNext:hover, #itemImageNext:hover {
         transform: translateX(2%);
 }
 
@@ -280,7 +291,7 @@ ul, h2, p, h4 {
 	overflow: hidden;
 }
 
-.monsterDetailContainer {
+.monsterDetailContainer, .itemDetailContainer {
         height: 95%;
         display: flex;
         flex-direction: column;

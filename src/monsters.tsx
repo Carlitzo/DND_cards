@@ -54,16 +54,16 @@ export default  function MonsterContent () {
         
         const header = (
                 <div className="monsterHeader">
-                                <h2 className="monsterTitle">{currentMonster.name}</h2>
-                                <h3 className="CR">CR: {currentMonster.challenge_rating}</h3>
-                                <div className="monsterInfoBriefContainer">
-                                        <p className="monsterInfoBrief">{currentMonsterType}</p>
-                                        <p className="monsterInfoBriefSeparation"></p>
-                                        <p className="monsterInfoBrief">{currentMonster.size}</p>
-                                        <p className="monsterInfoBriefSeparation"></p>
-                                        <p className="monsterInfoBrief">Hit-Points: {currentMonster.hp}</p>
-                                </div>
+                        <h2 className="monsterTitle">{currentMonster.name}</h2>
+                        <h3 className="CR">CR: {currentMonster.challenge_rating}</h3>
+                        <div className="monsterInfoBriefContainer">
+                                <p className="monsterInfoBrief">{currentMonsterType}</p>
+                                <p className="monsterInfoBriefSeparation"></p>
+                                <p className="monsterInfoBrief">{currentMonster.size}</p>
+                                <p className="monsterInfoBriefSeparation"></p>
+                                <p className="monsterInfoBrief">Hit-Points: {currentMonster.hp}</p>
                         </div>
+                </div>
         );
 
         if (showDetail) return (

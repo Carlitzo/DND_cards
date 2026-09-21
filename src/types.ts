@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { Monster } from '../backend/types';
+import type { Monster, Item } from '../backend/types';
 
 export type View = 'menu' | 'monsters' | 'items' | 'spells';
 
@@ -26,4 +26,8 @@ export interface SpellsContentProps {
 
 export interface MonsterDetailProps {
         monster: Monster;
+}
+
+export interface ItemDetailProps {
+        item: Item;
 }

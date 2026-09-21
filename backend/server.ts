@@ -1,8 +1,8 @@
-import type { Monster } from "./types.ts";
+import type { Monster, Item } from "./types.ts";
 
 let _data: any[] = [];
-let _monsters: any[] = [];
-let _items: any[] = [];
+let _monsters: Monster[] = [];
+let _items: Item[] = [];
 let _spells: any[] = []; // lägg till typer på dessa senare
 
 const requestHandler = async (req: Request) => {
@@ -49,7 +49,7 @@ async function fetchInBatches(urls: string[], batchSize = 10, delayMs = 500) {
 
 async function _fetchAllProductsAndInitializeData() {
         await _fetchAndManipulateMonsters();
-        await _fetchAndManipulateEquipment();
+        await _fetchAndManipulateItems();
         await _fetchAndManipulateSpells();
         // equipment-categories är komplex, jag behöver fetcha flera gånger för att samla ihop ett data-set som jag tycker 
         // representerar *items* väl. Det är otroligt kategoriserat i typ magic-items, sen ranged-weapons, melee-weapons (olika fetches)
@@ -70,7 +70,6 @@ async function _fetchAndManipulateMonsters() {
                 const urls = data.results.map((result: any) => `https://www.dnd5eapi.co${result.url}`); // gets the url of all monsters so they can be fetched in batches individually
                 
                 rawMonsterData = await fetchInBatches(urls, 10, 500);
-                console.log(rawMonsterData.find(monster => monster.name === "Adult Black Dragon"));
                 console.log(error);
                 await Deno.writeTextFile('./cached_files/monsters.json', JSON.stringify(rawMonsterData, null, 2));
                 console.log(`Fetched and cached ${rawMonsterData.length} monsters`);
@@ -124,13 +123,48 @@ function sortMonsters(monsters: any[]) {
         });
 }
 
-async function _fetchAndManipulateEquipment() {
-        const res = await fetch('https://www.dnd5eapi.co/api/2014/equipment/');
-        const data = await res.json();
-        
-//        console.log(data.results)
-//        console.log(data.count)
+async function _fetchAndManipulateItems() {
+        let rawItemData: any[];
+        try {
+                const cachedFile = await Deno.readTextFile('./cached_files/items.json');
+                rawItemData = JSON.parse(cachedFile);
+                console.log('Loaded items from cached file.');
+        } catch (error) {
+                console.log('No cached file found, fetching from API instead.');
+                
+                const res = await fetch('https://www.dnd5eapi.co/api/2014/magic-items/'); // fetches all monsters to get their name for next fetch (only returns an object with limited information about the specific monster)
+                const data = await res.json();
+                const urls = data.results.map((result: any) => `https://www.dnd5eapi.co${result.url}`); // gets the url of all monsters so they can be fetched in batches individually
+                
+                rawItemData = await fetchInBatches(urls, 10, 500);
+                console.log(error);
+                await Deno.writeTextFile('./cached_files/items.json', JSON.stringify(rawItemData, null, 2));
+                console.log(`Fetched and cached ${rawItemData.length} items`);
+        }
 
+        const items: Item[] = rawItemData.map(mapToItem);
+        _items = sortItems(items);
+}
+
+function mapToItem(rawItemData: any): Item {
+        return {
+                name: rawItemData.name,
+                category: rawItemData.equipment_category.name,
+                image: rawItemData.image ? `https://www.dnd5eapi.co${rawItemData.image}` : '',
+                url: rawItemData.url,
+                rarity: rawItemData.rarity.name,
+                desc: rawItemData.desc,
+                attunement: rawItemData.desc[0].includes("attunement") ? "Attunement required" : "No attunement required"
+        }
+}
+
+function sortItems(items: any[]) {
+        return items.sort((itemA, itemB) => {
+                if (itemA.category < itemB.category) return 1;
+                if (itemA.category > itemB.category) return -1;
+
+                return itemA.name - itemB.name;
+        })
 }
 
 async function _fetchAndManipulateSpells() {
