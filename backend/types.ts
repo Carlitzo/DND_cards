@@ -90,3 +90,20 @@ export type Item = {
         desc: string[]
         attunement?: string
 }
+
+export type Spell = {
+        name: string
+        desc: string[]
+        range: string
+        components: string[]
+        ritual: boolean
+        duration: string
+        concentration: boolean
+        casting_time: string
+        level: number
+        dc: string
+        dc_success: string
+        school_of_magic: string
+        classes: string[]
+        subclasses: string[]
+}

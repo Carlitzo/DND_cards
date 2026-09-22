@@ -116,7 +116,15 @@ export default function ItemsContent () {
 function ItemDetail({item }: ItemDetailProps) {
         return (
                 <div className="itemDetailContainer">
-
+                        <div className="itemDetailDescContainer">
+                                <p>{item.desc[1]}</p>
+                        </div>
+                        <div className="itemDetailImageContainer">
+                                <img
+                                        id="itemDetailImage"
+                                        src={item.image}
+                                />
+                        </div>
                 </div>
         )
 }

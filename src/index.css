@@ -291,10 +291,17 @@ ul, h2, p, h4 {
 	overflow: hidden;
 }
 
-.monsterDetailContainer, .itemDetailContainer {
+.monsterDetailContainer {
         height: 95%;
         display: flex;
         flex-direction: column;
+        gap: 2rem;
+}
+
+.itemDetailContainer {
+        height: 95%;
+        display: flex;
+        flex-direction: row;
         gap: 2rem;
 }
 
@@ -431,4 +438,20 @@ ul, h2, p, h4 {
 
 .actionDesc, .specialAbilityDesc, .legendaryActionDesc {
         font-size: smaller;
+}
+
+.itemDetailDescContainer {
+        padding: 1rem;
+        font-size: medium;
+}
+
+.itemDetailImageContainer {
+        height: 100%;
+        width: 100%;
+}
+
+#itemDetailImage {
+        height: 10rem;
+        width: 10rem;
+        border-radius: 10%;
 }

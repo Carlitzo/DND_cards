@@ -1,9 +1,8 @@
-import type { Monster, Item } from "./types.ts";
+import type { Monster, Item, Spell } from "./types.ts";
 
-let _data: any[] = [];
 let _monsters: Monster[] = [];
 let _items: Item[] = [];
-let _spells: any[] = []; // lägg till typer på dessa senare
+let _spells: Spell[] = [];
 
 const requestHandler = async (req: Request) => {
         const url = new URL(req.url);
@@ -51,9 +50,6 @@ async function _fetchAllProductsAndInitializeData() {
         await _fetchAndManipulateMonsters();
         await _fetchAndManipulateItems();
         await _fetchAndManipulateSpells();
-        // equipment-categories är komplex, jag behöver fetcha flera gånger för att samla ihop ett data-set som jag tycker 
-        // representerar *items* väl. Det är otroligt kategoriserat i typ magic-items, sen ranged-weapons, melee-weapons (olika fetches)
-        // egentligen samma sak för monsters, det finns sjukt mycket information att gå igenom där. (bilder finns)
 }
 
 async function _fetchAndManipulateMonsters() {
@@ -66,8 +62,8 @@ async function _fetchAndManipulateMonsters() {
                 console.log('No cached file found, fetching from API instead.');
                 
                 const res = await fetch('https://www.dnd5eapi.co/api/2014/monsters/'); // fetches all monsters to get their name for next fetch (only returns an object with limited information about the specific monster)
-                const data = await res.json();
-                const urls = data.results.map((result: any) => `https://www.dnd5eapi.co${result.url}`); // gets the url of all monsters so they can be fetched in batches individually
+                const monsterData = await res.json();
+                const urls = monsterData.results.map((result: any) => `https://www.dnd5eapi.co${result.url}`); // gets the url of all monsters so they can be fetched in batches individually
                 
                 rawMonsterData = await fetchInBatches(urls, 10, 500);
                 console.log(error);
@@ -114,13 +110,15 @@ function mapToMonster(rawMonsterData: any): Monster {
         };
 }
 
-function sortMonsters(monsters: any[]) {
-        return monsters.sort((monsterA, monsterB) => {
-                if (monsterA.challenge_rating < monsterB.challenge_rating) return 1;
-                if (monsterA.challenge_rating > monsterB.challenge_rating) return -1;
-                
-                return monsterA.name - monsterB.name;
-        });
+function sortMonsters(monsters: Monster[]) {
+	return monsters.sort((monsterA, monsterB) => {
+		if (monsterA.challenge_rating < monsterB.challenge_rating) return 1;
+		if (monsterA.challenge_rating > monsterB.challenge_rating) return -1;
+
+		if (monsterA.name < monsterB.name) return -1;
+		if (monsterA.name > monsterB.name) return 1;
+		return 0;
+	});
 }
 
 async function _fetchAndManipulateItems() {
@@ -132,9 +130,9 @@ async function _fetchAndManipulateItems() {
         } catch (error) {
                 console.log('No cached file found, fetching from API instead.');
                 
-                const res = await fetch('https://www.dnd5eapi.co/api/2014/magic-items/'); // fetches all monsters to get their name for next fetch (only returns an object with limited information about the specific monster)
-                const data = await res.json();
-                const urls = data.results.map((result: any) => `https://www.dnd5eapi.co${result.url}`); // gets the url of all monsters so they can be fetched in batches individually
+                const res = await fetch('https://www.dnd5eapi.co/api/2014/magic-items/');
+                const itemData = await res.json();
+                const urls = itemData.results.map((result: any) => `https://www.dnd5eapi.co${result.url}`);
                 
                 rawItemData = await fetchInBatches(urls, 10, 500);
                 console.log(error);
@@ -158,22 +156,74 @@ function mapToItem(rawItemData: any): Item {
         }
 }
 
-function sortItems(items: any[]) {
-        return items.sort((itemA, itemB) => {
-                if (itemA.category < itemB.category) return 1;
-                if (itemA.category > itemB.category) return -1;
+function sortItems(items: Item[]) {
+	return items.sort((itemA, itemB) => {
+		if (itemA.category < itemB.category) return 1;
+		if (itemA.category > itemB.category) return -1;
 
-                return itemA.name - itemB.name;
-        })
+		if (itemA.name < itemB.name) return -1;
+		if (itemA.name > itemB.name) return 1;
+		return 0;
+	});
 }
 
 async function _fetchAndManipulateSpells() {
-        const res = await fetch('https://www.dnd5eapi.co/api/2014/spells/');
-        const data = await res.json();
-        
-//        console.log(data.results)
-//        console.log(data.count)
+        let rawSpellData: any[];
+        try {
+                const cachedFile = await Deno.readTextFile('./cached_files/spells.json');
+                rawSpellData = JSON.parse(cachedFile);
+                console.log('Loaded items from cached file');
+        } catch (error) {
+                console.log('No cached file found, fetching from API instead.');
 
+                const res = await fetch('https://www.dnd5eapi.co/api/2014/spells/');
+                const spellData = await res.json();
+                const urls = spellData.results.map((result: any) => `https://www.dnd5eapi.co${result.url}`);
+
+                rawSpellData = await fetchInBatches(urls, 10, 500);
+                console.log(error);
+                await Deno.writeTextFile('./cached_files/spells.json', JSON.stringify(rawSpellData, null, 2));
+                console.log(`Fetched and cached ${rawSpellData.length} spells`)
+        }
+
+        const spells: any[] = rawSpellData.map(mapToSpell);
+        console.log(rawSpellData);
+        _spells = sortSpells(spells);
+}
+
+function mapToSpell(rawSpellData: any): Spell {
+        return {
+                name: rawSpellData.name,
+                desc: rawSpellData.desc,
+                range: rawSpellData.range,
+                components: rawSpellData.components,
+                ritual: rawSpellData.ritual,
+                duration: rawSpellData.duration,
+                concentration: rawSpellData.concentration,
+                casting_time: rawSpellData.casting_time,
+                level: rawSpellData.level,
+                dc: rawSpellData.dc.dc_type.index,
+                dc_success: rawSpellData.dc.dc_success,
+                school_of_magic: rawSpellData.school.name,
+                classes: rawSpellData.classes.map((classInfo: any) => {
+                        return classInfo.name
+                }),
+                subclasses: rawSpellData.subclasses.map((subclass: any) => {
+                        return subclass.name;
+                })
+        }
+}
+
+function sortSpells(spells: Spell[]) {
+        return spells.sort((spellA, spellB) => {
+                if (spellA.level !== spellB.level) {
+                        return spellB.level - spellA.level;
+                }
+                if (spellA.name < spellB.name) return 1;
+                if (spellA.name > spellB.name) return -1;
+                
+                return 0;
+        });
 }
 
 async function main() {
